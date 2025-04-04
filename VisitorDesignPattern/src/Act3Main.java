@@ -1,14 +1,13 @@
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.List;
-import java.util.ArrayList; 
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-public class Main {
+public class Act3Main {
     public static void main(String[] args) {
 
         List<IVehicle> vehicles = new ArrayList<IVehicle>();
@@ -61,7 +60,8 @@ public class Main {
             System.out.println(vehicle);
         }
 
-        int totalCost = new VehicleService().calculateTotal(vehicles.toArray(new IVehicle[0]));
+        Act3VehicleService service = Act3VehicleService.getInstance();
+        int totalCost = service.calculateTotal(vehicles.toArray(new IVehicle[0]));
         System.out.println("Total Service Charge: $" + totalCost);
     }
 }

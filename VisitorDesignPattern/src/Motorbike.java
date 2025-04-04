@@ -19,7 +19,15 @@ public class Motorbike implements IVehicle {
         this.brand = brand;
     }
     @Override
+    public float co2Emissions() {
+        return 8887 * (1 + (0.01f * (100 - engineCapacity)));
+    }
+    @Override
     public int accept(IVehicleInspector vehicleInspector) {
         return vehicleInspector.visit(this);
+    }
+    @Override
+    public String toString() {
+        return "Motorbike [Engine Capacity=" + engineCapacity + ", Brand=" + brand + "]";
     }
 }

@@ -19,7 +19,15 @@ public class Van implements IVehicle {
         this.numberOfDoors = numberOfDoors;
     }
     @Override
+    public float co2Emissions() {
+        return 8887 * (1 + (0.1f * (numberOfDoors - 2)));
+    }
+    @Override
     public int accept(IVehicleInspector vehicleInspector) {
         return vehicleInspector.visit(this);
+    }
+    @Override
+    public String toString() {
+        return "Van [Storage Capacity=" + storageCapacity + ", Number Of Doors=" + numberOfDoors + "]";
     }
 }

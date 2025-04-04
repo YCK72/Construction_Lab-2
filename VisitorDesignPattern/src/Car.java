@@ -19,7 +19,15 @@ public class Car implements IVehicle {
         this.manufactureDate = manufactureDate;
     }
     @Override
+    public float co2Emissions() {
+        return 8887 * (1 + (0.05f * (2020 - manufactureDate)));
+    }
+    @Override
     public int accept(IVehicleInspector vehicleInspector) {
         return vehicleInspector.visit(this);
+    }
+    @Override
+    public String toString() {
+        return "Car [Color=" + color + ", Manufacture Date=" + manufactureDate + "]";
     }
 }
