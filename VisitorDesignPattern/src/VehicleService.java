@@ -1,10 +1,9 @@
 public class VehicleService {
     IVehicleInspector inspector;
 
-    VehicleService() {
-	// PROBLEM 1: We are new'ing up a specific implementation
-	// of our Inspection Service - you know how to fix this!
-	inspector = new VehicleInspection();
+    // Using Dependency Injection (DI) to decouple the inspector
+    VehicleService(IVehicleInspector inspector) {
+        this.inspector = inspector;
     }
     
     /* Returns the total Service charge for all the vehicles
@@ -12,7 +11,7 @@ public class VehicleService {
     public int calculateTotal(IVehicle[] vehicles) {
         int total = 0;
         for(IVehicle vehicle : vehicles){
-            total = total + vehicle.accept(inspector);
+            total += vehicle.accept(inspector);
         }
         return total;
     }
