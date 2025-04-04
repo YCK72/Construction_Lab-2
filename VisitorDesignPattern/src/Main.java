@@ -1,67 +1,70 @@
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 import java.util.ArrayList; 
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class Main {
     public static void main(String[] args) {
-
-        List<IVehicle> vehicles = new ArrayList<IVehicle>();
         String filePath = System.getProperty("data");
-        
         if (filePath == null) {
             System.out.println("Please specify the JSON file path using the 'data' system property.");
             return;
         }
 
+        List<IVehicle> vehicles = parseVehiclesFromFile(filePath);
+        if (vehicles == null) {
+            System.out.println("Error parsing vehicles.");
+            return;
+        }
+
+        // Display vehicle info
+        vehicles.forEach(System.out::println);
+
+        // Calculate and print total cost
+        int totalCost = new VehicleService().calculateTotal(vehicles);
+        System.out.println("Total Service Charge: $" + totalCost);
+    }
+
+    private static List<IVehicle> parseVehiclesFromFile(String filePath) {
+        List<IVehicle> vehicles = new ArrayList<>();
         JSONParser parser = new JSONParser();
 
         try (FileReader reader = new FileReader(filePath)) {
-            // Parse the JSON array from the file
             JSONArray jsonArray = (JSONArray) parser.parse(reader);
 
             for (Object obj : jsonArray) {
                 JSONObject vehicleObj = (JSONObject) obj;
                 String vtype = (String) vehicleObj.get("vtype");
 
-                // Create instances based on vtype
-                switch (vtype.trim()) {
-                    case "Car":
-                        String color = (String) vehicleObj.get("color");
-                        String myear = (String) vehicleObj.get("myear");
-                        vehicles.add(new Car(color, Integer.parseInt(myear)));
-                        break;
-
-                    case "Van":
-                        String storage = (String) vehicleObj.get("storage");
-                        String numdoors = (String) vehicleObj.get("numdoors");
-                        vehicles.add(new Van(Integer.parseInt(storage), Integer.parseInt(numdoors)));
-                        break;
-
-                    case "Motorbike":
-                        String engine = (String) vehicleObj.get("engine");
-                        String brand = (String) vehicleObj.get("brand");
-                        vehicles.add(new Motorbike(Integer.parseInt(engine), brand));
-                        break;
-
-                    default:
-                        System.out.println("Unknown vehicle type: " + vtype);
+                IVehicle vehicle = createVehicleFromJson(vtype, vehicleObj);
+                if (vehicle != null) {
+                    vehicles.add(vehicle);
+                } else {
+                    System.out.println("Unknown vehicle type: " + vtype);
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException | ParseException e) {
+            System.err.println("Error reading or parsing the file: " + e.getMessage());
             e.printStackTrace();
+            return null;
         }
+        return vehicles;
+    }
 
-        for (IVehicle vehicle : vehicles) {
-            System.out.println(vehicle);
+    private static IVehicle createVehicleFromJson(String vtype, JSONObject vehicleObj) {
+        switch (vtype.trim()) {
+            case "Car":
+                return new Car((String) vehicleObj.get("color"), Integer.parseInt((String) vehicleObj.get("myear")));
+            case "Van":
+                return new Van(Integer.parseInt((String) vehicleObj.get("storage")), Integer.parseInt((String) vehicleObj.get("numdoors")));
+            case "Motorbike":
+                return new Motorbike(Integer.parseInt((String) vehicleObj.get("engine")), (String) vehicleObj.get("brand"));
+            default:
+                return null;
         }
-
-        int totalCost = new VehicleService().calculateTotal(vehicles.toArray(new IVehicle[0]));
-        System.out.println("Total Service Charge: $" + totalCost);
     }
 }
