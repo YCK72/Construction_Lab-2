@@ -1,0 +1,5 @@
+[
+    { "vtype" : "Car", "color" : "Black", "myear" : "2010" },
+    { "vtype" : " Van", "storage" : "5000", "numdoors" : "4" },
+    { "vtype" : "Motorbike", "engine" : "1000", "brand" : "Harley-Davidson" }
+]
